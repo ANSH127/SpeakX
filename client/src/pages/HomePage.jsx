@@ -1,15 +1,34 @@
 import React from "react";
 import {Box,TextField,MenuItem} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import axios from 'axios';
+
 
 
 export default function HomePage() {
   const [coloumn, setColoumn] = React.useState(1);
   const searchRef = React.useRef(null);
+  const [data, setData] = React.useState([]);
 
   const handleSearch = (value) => {
     console.log(value);
   };
+
+  const fetchQuestions = async() => {
+    try {
+      const response = await axios.get("http://localhost:4000/questions");
+      setData(response.data);
+      console.log(response.data);
+      
+    } catch (error) {
+      console.error(error);
+      
+    }
+  }
+
+  React.useEffect(() => {
+    fetchQuestions();
+  }, []);
 
   return (
     <Box
@@ -25,7 +44,7 @@ export default function HomePage() {
             id="filter-by-coloumn"
             select
             label="Select"
-            helperText="Select Type"
+            helperText="Select Question Type"
             margin="dense"
             variant="standard"
             sx={{ width: "200px" }}
