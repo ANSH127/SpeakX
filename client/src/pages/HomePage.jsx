@@ -1,22 +1,44 @@
 import React from "react";
-import { Box, TextField, MenuItem,Chip } from "@mui/material";
+import { Box, TextField, MenuItem, Chip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
+import Pagination from "../components/Pagination";
 
 export default function HomePage() {
   const [coloumn, setColoumn] = React.useState(1);
   const searchRef = React.useRef(null);
   const [data, setData] = React.useState([]);
+  const [totalresults, setTotalResults] = React.useState(0);
 
-  const handleSearch = (value) => {
-    console.log(value);
+  const handleSearch = (title) => {
+    // console.log(title);
+
+    if (title.length > 0) {
+      fetchQuestions(title);
+    } else{
+      // fetchQuestions();
+      alert("Please enter a search term");
+    }
   };
 
-  const fetchQuestions = async () => {
+  const fetchQuestions = async (title=null) => {
     try {
+      if(title){
+
+        const response = await axios.get(
+          `http://localhost:4000/questions/search?title=${title}`
+        );
+        setData(response.data.questions);
+        setTotalResults(response.data.total);
+
+
+      }
+      else{
       const response = await axios.get("http://localhost:4000/questions");
-      setData(response.data);
-      console.log(response.data);
+      setData(response.data.questions);
+      setTotalResults(response.data.total);
+      }
+      // console.log(response.data.questions);
     } catch (error) {
       console.error(error);
     }
@@ -24,6 +46,21 @@ export default function HomePage() {
 
   React.useEffect(() => {
     fetchQuestions();
+  }, []);
+
+  React.useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        handleSearch(searchRef.current.value);
+      }
+    };
+  
+    const inputElement = searchRef.current;
+    inputElement.addEventListener('keypress', handleKeyPress);
+  
+    return () => {
+      inputElement.removeEventListener('keypress', handleKeyPress);
+    };
   }, []);
 
   return (
@@ -65,11 +102,13 @@ export default function HomePage() {
             InputProps={{
               endAdornment: (
                 <>
-                  <SearchIcon sx={{ cursor: "pointer", marginRight: 2 }} />
+                  <SearchIcon
+                    sx={{ cursor: "pointer", marginRight: 2 }}
+                    onClick={() => handleSearch(searchRef.current.value)}
+                  />
                 </>
               ),
             }}
-            onChange={(e) => handleSearch(e.target.value)}
             inputRef={searchRef}
             autoComplete="off"
           />
@@ -84,12 +123,15 @@ export default function HomePage() {
               borderRadius="5px"
               textAlign={"left"}
             >
-              <Chip label={item.type}  size="small" className=" justify-end" />
+              <Chip label={item.type} size="small" className=" justify-end" />
               <h3>
                 {index + 1}. {item.title}
-              </h3> 
+              </h3>
             </Box>
           ))}
+          <Pagination setCurrentData={setData} totalResults={totalresults} 
+          title={searchRef?.current?.value || null}
+          />
         </Box>
       </Box>
     </Box>
