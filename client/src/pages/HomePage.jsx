@@ -1,9 +1,7 @@
 import React from "react";
-import {Box,TextField,MenuItem} from "@mui/material";
+import { Box, TextField, MenuItem,Chip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import axios from 'axios';
-
-
+import axios from "axios";
 
 export default function HomePage() {
   const [coloumn, setColoumn] = React.useState(1);
@@ -14,17 +12,15 @@ export default function HomePage() {
     console.log(value);
   };
 
-  const fetchQuestions = async() => {
+  const fetchQuestions = async () => {
     try {
       const response = await axios.get("http://localhost:4000/questions");
       setData(response.data);
       console.log(response.data);
-      
     } catch (error) {
       console.error(error);
-      
     }
-  }
+  };
 
   React.useEffect(() => {
     fetchQuestions();
@@ -39,7 +35,7 @@ export default function HomePage() {
     >
       <h3 className="text-xl font-bold">Questions and Answers</h3>
       <Box padding={"40px"}>
-        <Box sx={{ display: "flex" }} >
+        <Box sx={{ display: "flex" }}>
           <TextField
             id="filter-by-coloumn"
             select
@@ -77,6 +73,23 @@ export default function HomePage() {
             inputRef={searchRef}
             autoComplete="off"
           />
+        </Box>
+        <Box>
+          {data.map((item, index) => (
+            <Box
+              key={item.id}
+              padding={"15px"}
+              margin={"10px"}
+              border="1px solid #ccc"
+              borderRadius="5px"
+              textAlign={"left"}
+            >
+              <Chip label={item.type}  size="small" className=" justify-end" />
+              <h3>
+                {index + 1}. {item.title}
+              </h3> 
+            </Box>
+          ))}
         </Box>
       </Box>
     </Box>
