@@ -1,8 +1,11 @@
 const Question = require('../models/questionModel');
 
 const getQuestions = async (req, res) => {
+    const { page = 1, limit = 100 } = req.query;
+
+    const skip = (page - 1) * limit;
     try {
-        const questions = await Question.find().skip(200).limit(100);
+        const questions = await Question.find().skip(skip).limit(limit);
 
         res.json(questions);
     } catch (error) {
