@@ -3,11 +3,13 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const cors = require('cors');
 
 // Import routes
 const questionRoutes = require('./routes/question');
 
 // Middleware
+app.use(cors({origin: 'http://localhost:5173'}));
 app.use(express.json());
 
 // Routes
