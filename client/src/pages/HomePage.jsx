@@ -3,6 +3,10 @@ import { Box, TextField, MenuItem, Chip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import Pagination from "../components/Pagination";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export default function HomePage() {
   const [coloumn, setColoumn] = React.useState(1);
@@ -15,30 +19,26 @@ export default function HomePage() {
 
     if (title.length > 0) {
       fetchQuestions(title);
-    } else{
+    } else {
       // fetchQuestions();
       alert("Please enter a search term");
     }
   };
 
-  const fetchQuestions = async (title=null) => {
+  const fetchQuestions = async (title = null) => {
     try {
-      if(title){
-
+      if (title) {
         const response = await axios.get(
           `http://localhost:4000/questions/search?title=${title}`
         );
         setData(response.data.questions);
         setTotalResults(response.data.total);
-
-
+      } else {
+        const response = await axios.get("http://localhost:4000/questions");
+        setData(response.data.questions);
+        setTotalResults(response.data.total);
+        console.log(response.data.questions);
       }
-      else{
-      const response = await axios.get("http://localhost:4000/questions");
-      setData(response.data.questions);
-      setTotalResults(response.data.total);
-      }
-      // console.log(response.data.questions);
     } catch (error) {
       console.error(error);
     }
@@ -50,16 +50,16 @@ export default function HomePage() {
 
   React.useEffect(() => {
     const handleKeyPress = (event) => {
-      if (event.key === 'Enter') {
+      if (event.key === "Enter") {
         handleSearch(searchRef.current.value);
       }
     };
-  
+
     const inputElement = searchRef.current;
-    inputElement.addEventListener('keypress', handleKeyPress);
-  
+    inputElement.addEventListener("keypress", handleKeyPress);
+
     return () => {
-      inputElement.removeEventListener('keypress', handleKeyPress);
+      inputElement.removeEventListener("keypress", handleKeyPress);
     };
   }, []);
 
@@ -127,10 +127,51 @@ export default function HomePage() {
               <h3>
                 {index + 1}. {item.title}
               </h3>
+
+              {item.type === "MCQ" && (
+                <Box>
+                  {item.options.map((option, index) => (
+                    <Box key={index} padding={"5px"}>
+                      {String.fromCharCode(65 + index)}. {option.text}
+                    </Box>
+                  ))}
+
+                  <Accordion className=" w-fit text-sm" >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <h5 className="text-blue-500">View Answer</h5>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <h5>
+                        {
+                          item.options.filter(
+                            (option) => option.isCorrectAnswer === true
+                          )[0].text
+                        }
+                      </h5>
+                    </AccordionDetails>
+                  </Accordion>
+                </Box>
+              )}
+              {item.type === "ANAGRAM" && (
+                <Box>
+                  <h4>Rearrange the following to form a sentence or word:</h4>
+                  {item.blocks.map((option, index) => (
+                    <Box key={index} padding={"5px"}>
+                      {option.text}
+                    </Box>
+                  ))}
+                </Box>
+              )}
             </Box>
           ))}
-          <Pagination setCurrentData={setData} totalResults={totalresults} 
-          title={searchRef?.current?.value || null}
+          <Pagination
+            setCurrentData={setData}
+            totalResults={totalresults}
+            title={searchRef?.current?.value || null}
           />
         </Box>
       </Box>
