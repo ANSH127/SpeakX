@@ -7,7 +7,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import AnagramOptions from "../components/AnagramOptions";
 export default function HomePage() {
   const [coloumn, setColoumn] = React.useState(1);
   const searchRef = React.useRef(null);
@@ -136,7 +136,7 @@ export default function HomePage() {
                     </Box>
                   ))}
 
-                  <Accordion className=" w-fit text-sm" >
+                  <Accordion className=" w-fit text-base">
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls="panel1a-content"
@@ -157,13 +157,8 @@ export default function HomePage() {
                 </Box>
               )}
               {item.type === "ANAGRAM" && (
-                <Box>
-                  <h4>Rearrange the following to form a sentence or word:</h4>
-                  {item.blocks.map((option, index) => (
-                    <Box key={index} padding={"5px"}>
-                      {option.text}
-                    </Box>
-                  ))}
+                <Box className="pt-2">
+                  <AnagramOptions options={item.blocks} />
                 </Box>
               )}
             </Box>
