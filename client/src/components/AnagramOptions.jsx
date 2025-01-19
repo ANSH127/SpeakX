@@ -2,6 +2,8 @@ import React from "react";
 import { ReactSortable } from "react-sortablejs";
 import ReorderIcon from "@mui/icons-material/Reorder";
 export default function AnagramOptions({ options }) {
+
+  options = options?.sort(() => Math.random() - 0.5);
   const [items, setItems] = React.useState(
     options?.map((option) => ({
       id: option._id,
