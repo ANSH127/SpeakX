@@ -183,6 +183,13 @@ export default function HomePage() {
               )}
             </Box>
           ))}
+
+          {data.length===0 && 
+          <Box>
+            <h3>No results found</h3>
+          </Box>
+          }
+
           <Pagination
             setCurrentData={setData}
             totalResults={totalresults}
