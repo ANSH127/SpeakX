@@ -34,13 +34,13 @@ export default function Pagination({ setCurrentData,totalResults,title,coloumn }
 
   return (
     <div>
-      <div className="flex justify-center items-center w-full my-10">
+      <div className="flex justify-center items-center w-75% my-10">
         <ReactPaginate
           breakLabel="..."
           nextLabel="| Next"
           onPageChange={handlePageClick}
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          marginPagesDisplayed={1}
           pageCount={pageCount}
           previousLabel="Prev |"
           renderOnZeroPageCount={null}

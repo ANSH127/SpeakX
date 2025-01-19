@@ -77,11 +77,11 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    gap: 10px;
+    gap: 5px;
     box-shadow: 0 0 4px rgba(249, 115, 22, 1);
     border: 1px solid rgba(249, 115, 22, 1);
-    padding: 10px 20px;
-    border-radius: 20px;
+    padding: 10px 10px;
+    border-radius: 15px;
 }
 .page-btn {
     list-style-type: none;

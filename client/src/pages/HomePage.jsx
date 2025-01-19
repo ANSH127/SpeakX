@@ -8,12 +8,14 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AnagramOptions from "../components/AnagramOptions";
+import Loadar from "../components/Loadar";
 export default function HomePage() {
   const [coloumn, setColoumn] = React.useState("ALL");
   const [data, setData] = React.useState([]);
   const [totalresults, setTotalResults] = React.useState(0);
   const [title, setTitle] = React.useState("");
   const searchRef = React.useRef(null);
+  const [loading, setLoading] = React.useState(false);
 
   const handleSearch = () => {
     // console.log(title);
@@ -28,6 +30,7 @@ export default function HomePage() {
 
   const fetchQuestions = async () => {
     try {
+      setLoading(true);
       if (title) {
         console.log(coloumn);
 
@@ -48,6 +51,9 @@ export default function HomePage() {
       }
     } catch (error) {
       console.error(error);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -76,9 +82,13 @@ export default function HomePage() {
       textAlign="center"
       alignItems={"center"}
       paddingTop="50px"
+
     >
       <h3 className="text-xl font-bold">Questions and Answers</h3>
-      <Box padding={"40px"}>
+      <Box 
+      // padding={"40px"}
+      className="sm:p-12  md:p-8  mx-auto"
+      >
         <Box sx={{ display: "flex" }}>
           <TextField
             id="filter-by-coloumn"
@@ -121,7 +131,9 @@ export default function HomePage() {
             inputRef={searchRef}
           />
         </Box>
-        <Box>
+        {
+          loading ? <Loadar /> : 
+          <Box>
           {data.map((item, index) => (
             <Box
               key={item._id}
@@ -177,7 +189,7 @@ export default function HomePage() {
             title={title}
             coloumn={coloumn}
           />
-        </Box>
+        </Box>}
       </Box>
     </Box>
   );
