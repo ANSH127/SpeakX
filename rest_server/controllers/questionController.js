@@ -1,13 +1,13 @@
 const Question = require('../models/questionModel');
 
 const getQuestions = async (req, res) => {
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, questionType } = req.query;
     // console.log(page, limit);
-    
     const skip = (page - 1) * limit;
     try {
-        const questions = await Question.find().skip(skip).limit(limit);
-        const total = await Question.countDocuments();
+        const query = questionType && questionType != "ALL" ? { type: questionType } : {};
+        const questions = await Question.find(query).skip(skip).limit(limit);
+        const total = await Question.countDocuments(query);
 
         res.json({
             questions,
@@ -20,11 +20,15 @@ const getQuestions = async (req, res) => {
 
 const getQuestionsByTitle = async (req, res) => {
     try {
-        const { title, page = 1, limit = 20 } = req.query;
+        const { title, page = 1, limit = 20, questionType } = req.query;
         // console.log(title);
+        console.log(questionType);
 
         const skip = (page - 1) * limit;
-        const query = title ? { title: new RegExp(title, 'i') } : {}; // Case-insensitive search
+        const query={
+            title:title?{$regex:title,$options:'i'}:{},
+            type:questionType && questionType != "ALL" ? questionType : { $exists: true}
+        }
         const questions = await Question.find(query).skip(skip).limit(limit);
         const total = await Question.countDocuments(query);
 
