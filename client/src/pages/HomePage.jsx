@@ -21,7 +21,7 @@ export default function HomePage() {
     // console.log(title);
 
     if (title.length > 0) {
-      fetchQuestions(title);
+      fetchQuestions();
     } else {
       // fetchQuestions();
       alert("Please enter a search term");
