@@ -16,15 +16,15 @@ export default function HomePage() {
   const [title, setTitle] = React.useState("");
   const searchRef = React.useRef(null);
   const [loading, setLoading] = React.useState(false);
+  const previousSearch = React.useRef({ title: "", coloumn: "" });
 
   const handleSearch = () => {
-    // console.log(title);
-
-    if (title.length > 0) {
+    if (
+      title !== previousSearch.current.title ||
+      coloumn !== previousSearch.current.coloumn
+    ) {
       fetchQuestions();
-    } else {
-      // fetchQuestions();
-      alert("Please enter a search term");
+      previousSearch.current = { title, coloumn };
     }
   };
 
@@ -51,8 +51,7 @@ export default function HomePage() {
       }
     } catch (error) {
       console.error(error);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -82,12 +81,11 @@ export default function HomePage() {
       textAlign="center"
       alignItems={"center"}
       paddingTop="50px"
-
     >
       <h3 className="text-xl font-bold">Questions and Answers</h3>
-      <Box 
-      // padding={"40px"}
-      className="sm:p-12  md:p-8  mx-auto"
+      <Box
+        // padding={"40px"}
+        className="sm:p-12  md:p-8  mx-auto"
       >
         <Box sx={{ display: "flex" }}>
           <TextField
@@ -131,72 +129,74 @@ export default function HomePage() {
             inputRef={searchRef}
           />
         </Box>
-        {
-          loading ? <Loadar /> : 
+        {loading ? (
+          <Loadar />
+        ) : (
           <Box>
-          {data.map((item, index) => (
-            <Box
-              key={item._id}
-              padding={"15px"}
-              margin={"10px"}
-              border="1px solid #ccc"
-              borderRadius="5px"
-              textAlign={"left"}
-            >
-              <Chip label={item.type} size="small" className=" justify-end" />
-              <h3>
-                {index + 1}. {item.title}
-              </h3>
+            {data.map((item, index) => (
+              <Box
+                key={item._id}
+                padding={"15px"}
+                margin={"10px"}
+                border="1px solid #ccc"
+                borderRadius="5px"
+                textAlign={"left"}
+              >
+                <Chip label={item.type} size="small" className=" justify-end" />
+                <h3>
+                  {index + 1}. {item.title}
+                </h3>
 
-              {item.type === "MCQ" && (
-                <Box>
-                  {item.options.map((option, index) => (
-                    <Box key={index} padding={"5px"}>
-                      {String.fromCharCode(65 + index)}. {option.text}
-                    </Box>
-                  ))}
+                {item.type === "MCQ" && (
+                  <Box>
+                    {item.options.map((option, index) => (
+                      <Box key={index} padding={"5px"}>
+                        {String.fromCharCode(65 + index)}. {option.text}
+                      </Box>
+                    ))}
 
-                  <Accordion className=" w-fit text-base">
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
-                    >
-                      <h5 className="text-blue-500">View Answer</h5>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <h5>
-                        {
-                          item.options.filter(
-                            (option) => option.isCorrectAnswer === true
-                          )[0].text
-                        }
-                      </h5>
-                    </AccordionDetails>
-                  </Accordion>
-                </Box>
-              )}
-              {item.type === "ANAGRAM" && (
-                <Box className="pt-2">
-                  <AnagramOptions options={item.blocks} />
-                </Box>
-              )}
-            </Box>
-          ))}
+                    <Accordion className=" w-fit text-base">
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                      >
+                        <h5 className="text-blue-500">View Answer</h5>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <h5>
+                          {
+                            item.options.filter(
+                              (option) => option.isCorrectAnswer === true
+                            )[0].text
+                          }
+                        </h5>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Box>
+                )}
+                {item.type === "ANAGRAM" && (
+                  <Box className="pt-2">
+                    <AnagramOptions options={item.blocks} />
+                  </Box>
+                )}
+              </Box>
+            ))}
 
-          {data.length===0 && 
-          <Box>
-            <h3>No results found</h3>
+            {data.length === 0 && (
+              <Box>
+                <h3>No results found</h3>
+              </Box>
+            )}
+
+            <Pagination
+              setCurrentData={setData}
+              totalResults={totalresults}
+              title={title}
+              coloumn={coloumn}
+            />
           </Box>
-          }
-
-          <Pagination
-            setCurrentData={setData}
-            totalResults={totalresults}
-            title={title}
-            coloumn={coloumn}
-          />
-        </Box>}
+        )}
       </Box>
     </Box>
   );
