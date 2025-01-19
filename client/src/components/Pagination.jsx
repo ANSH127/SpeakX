@@ -2,7 +2,7 @@ import  { useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 
-export default function Pagination({ setCurrentData,totalResults,title }) {
+export default function Pagination({ setCurrentData,totalResults,title,coloumn }) {
   const itemsPerPage = 20;
   const pageCount = Math.ceil(totalResults / itemsPerPage);
 
@@ -16,11 +16,11 @@ export default function Pagination({ setCurrentData,totalResults,title }) {
   const fetchQuestions = async (page,limit) => {
     try {
     if(title){
-        const response = await axios.get("http://localhost:4000/questions/search?title="+title+"&page="+page+"&limit="+limit);
+        const response = await axios.get("http://localhost:4000/questions/search?title="+title+"&page="+page+"&limit="+limit+"&questionType="+coloumn);
         setCurrentData(response.data.questions);
     }
     else{
-      const response = await axios.get("http://localhost:4000/questions?page="+page+"&limit="+limit);
+      const response = await axios.get("http://localhost:4000/questions?page="+page+"&limit="+limit+"&questionType="+coloumn);
       setCurrentData(response.data.questions);
     }
     } catch (error) {

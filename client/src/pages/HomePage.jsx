@@ -9,12 +9,13 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AnagramOptions from "../components/AnagramOptions";
 export default function HomePage() {
-  const [coloumn, setColoumn] = React.useState(1);
-  const searchRef = React.useRef(null);
+  const [coloumn, setColoumn] = React.useState("ALL");
   const [data, setData] = React.useState([]);
   const [totalresults, setTotalResults] = React.useState(0);
+  const [title, setTitle] = React.useState("");
+  const searchRef = React.useRef(null);
 
-  const handleSearch = (title) => {
+  const handleSearch = () => {
     // console.log(title);
 
     if (title.length > 0) {
@@ -25,19 +26,25 @@ export default function HomePage() {
     }
   };
 
-  const fetchQuestions = async (title = null) => {
+  const fetchQuestions = async () => {
     try {
       if (title) {
+        console.log(coloumn);
+
         const response = await axios.get(
-          `http://localhost:4000/questions/search?title=${title}`
+          `http://localhost:4000/questions/search?title=${title}&questionType=${coloumn}`
         );
         setData(response.data.questions);
         setTotalResults(response.data.total);
       } else {
-        const response = await axios.get("http://localhost:4000/questions");
+        const response = await axios.get(
+          "http://localhost:4000/questions?questionType=" + coloumn
+        );
         setData(response.data.questions);
+        // console.log(response.data.total);
+
         setTotalResults(response.data.total);
-        console.log(response.data.questions);
+        // console.log(response.data.questions);
       }
     } catch (error) {
       console.error(error);
@@ -46,12 +53,12 @@ export default function HomePage() {
 
   React.useEffect(() => {
     fetchQuestions();
-  }, []);
+  }, [coloumn]);
 
   React.useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === "Enter") {
-        handleSearch(searchRef.current.value);
+        handleSearch();
       }
     };
 
@@ -61,7 +68,7 @@ export default function HomePage() {
     return () => {
       inputElement.removeEventListener("keypress", handleKeyPress);
     };
-  }, []);
+  }, [title]);
 
   return (
     <Box
@@ -81,19 +88,19 @@ export default function HomePage() {
             margin="dense"
             variant="standard"
             sx={{ width: "200px" }}
-            defaultValue={1}
+            defaultValue={"ALL"}
             onChange={(e) => setColoumn(e.target.value)}
           >
-            <MenuItem value={1}>ALL</MenuItem>
-            <MenuItem value={2}>ANAGRAM</MenuItem>
-            <MenuItem value={3}>MCQ</MenuItem>
-            <MenuItem value={4}>CONTENT_ONLY</MenuItem>
-            <MenuItem value={5}>CONVERSATION</MenuItem>
-            <MenuItem value={6}>READ_ALONG</MenuItem>
+            <MenuItem value={"ALL"}>ALL</MenuItem>
+            <MenuItem value={"ANAGRAM"}>ANAGRAM</MenuItem>
+            <MenuItem value={"MCQ"}>MCQ</MenuItem>
+            <MenuItem value={"CONTENT_ONLY"}>CONTENT_ONLY</MenuItem>
+            <MenuItem value={"CONVERSATION"}>CONVERSATION</MenuItem>
+            <MenuItem value={"READ_ALONG"}>READ_ALONG</MenuItem>
           </TextField>
 
           <TextField
-            id="search"
+            id="searchtitle"
             label="Search"
             variant="standard"
             fullWidth
@@ -104,19 +111,20 @@ export default function HomePage() {
                 <>
                   <SearchIcon
                     sx={{ cursor: "pointer", marginRight: 2 }}
-                    onClick={() => handleSearch(searchRef.current.value)}
+                    onClick={() => handleSearch()}
                   />
                 </>
               ),
             }}
-            inputRef={searchRef}
             autoComplete="off"
+            onChange={(e) => setTitle(e.target.value)}
+            inputRef={searchRef}
           />
         </Box>
         <Box>
           {data.map((item, index) => (
             <Box
-              key={item.id}
+              key={item._id}
               padding={"15px"}
               margin={"10px"}
               border="1px solid #ccc"
@@ -166,7 +174,8 @@ export default function HomePage() {
           <Pagination
             setCurrentData={setData}
             totalResults={totalresults}
-            title={searchRef?.current?.value || null}
+            title={title}
+            coloumn={coloumn}
           />
         </Box>
       </Box>
