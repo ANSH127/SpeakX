@@ -16,11 +16,11 @@ export default function Pagination({ setCurrentData,totalResults,title,coloumn }
   const fetchQuestions = async (page,limit) => {
     try {
     if(title){
-        const response = await axios.get("http://localhost:4000/questions/search?title="+title+"&page="+page+"&limit="+limit+"&questionType="+coloumn);
+        const response = await axios.get("https://speakxrestserver.vercel.app/questions/search?title="+title+"&page="+page+"&limit="+limit+"&questionType="+coloumn);
         setCurrentData(response.data.questions);
     }
     else{
-      const response = await axios.get("http://localhost:4000/questions?page="+page+"&limit="+limit+"&questionType="+coloumn);
+      const response = await axios.get("https://speakxrestserver.vercel.app/questions?page="+page+"&limit="+limit+"&questionType="+coloumn);
       setCurrentData(response.data.questions);
     }
     } catch (error) {

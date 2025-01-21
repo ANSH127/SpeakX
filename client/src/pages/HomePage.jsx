@@ -35,13 +35,13 @@ export default function HomePage() {
         console.log(coloumn);
 
         const response = await axios.get(
-          `http://localhost:4000/questions/search?title=${title}&questionType=${coloumn}`
+          `https://speakxrestserver.vercel.app/questions/search?title=${title}&questionType=${coloumn}`
         );
         setData(response.data.questions);
         setTotalResults(response.data.total);
       } else {
         const response = await axios.get(
-          "http://localhost:4000/questions?questionType=" + coloumn
+          "https://speakxrestserver.vercel.app/questions?questionType=" + coloumn
         );
         setData(response.data.questions);
         // console.log(response.data.total);
