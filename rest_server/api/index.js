@@ -6,7 +6,7 @@ const app = express();
 const cors = require('cors');
 
 // Import routes
-const questionRoutes = require('./routes/question');
+const questionRoutes = require('../routes/question');
 
 // Middleware
 app.use(cors({origin: 'http://localhost:5173'}));
@@ -25,3 +25,5 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
 app.listen(4000, () => {
     console.log("Server is running on port 3000");
 });
+
+module.exports = app;
