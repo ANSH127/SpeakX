@@ -32,7 +32,7 @@ export default function HomePage() {
     try {
       setLoading(true);
       if (title) {
-        console.log(coloumn);
+        // console.log(coloumn);
 
         const response = await axios.get(
           `https://speakxrestserver.vercel.app/questions/search?title=${title}&questionType=${coloumn}`
