@@ -12,7 +12,7 @@ const questionRoutes = require('../routes/question');
 app.use(cors({
     origin:
         [
-            'http://localhost:5173', 'https://speak-x.vercel.app/'
+            'http://localhost:5173', 'https://speak-x.vercel.app'
 
 
         ]
