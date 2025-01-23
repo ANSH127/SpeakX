@@ -2,6 +2,9 @@
 
 This project consists of a REST server, a gRPC server, and a client application built with React. The project is designed to manage and display questions and answers.
 
+![Application Screenshot](client/src/assets/screenshot.png)
+
+
 ## REST Server
 
 The REST server is built with Express and MongoDB. It provides endpoints to manage questions.
