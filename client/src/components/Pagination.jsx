@@ -10,7 +10,7 @@ export default function Pagination({ setCurrentData,totalResults,title,coloumn }
   const handlePageClick = (data) => {
     let selected = data.selected;
     fetchQuestions(selected + 1, itemsPerPage);
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const fetchQuestions = async (page,limit) => {
